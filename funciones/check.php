@@ -3,7 +3,6 @@ require "conexion.php";
 $conexion = conecta();
 
 
-$codigo = $_REQUEST['codigo'];
 $huella = $_REQUEST['huella'];
 $tarjeta = $_REQUEST['tarjeta'];
 $facial = $_REQUEST['facial'];

@@ -21,10 +21,7 @@ function enviarDatos() {
     });
   }
   function hacerCheck(){
-    let codigo = document.getElementById('codigo').value;
-    if(codigo==""){
-      alert("Debe ingresar un codigo de usuario");
-      return;}
+
 
     let huella = document.getElementById('huella').value;
     let tarjeta = document.getElementById('tarjeta').value;
@@ -40,7 +37,7 @@ function enviarDatos() {
         type: 'POST',
         dataType: 'text',
         data: 
-        'codigo=' + codigo + '&huella=' + huella + '&tarjeta=' + tarjeta + '&facial=' + facial,
+        '&huella=' + huella + '&tarjeta=' + tarjeta + '&facial=' + facial,
         
         success: function(res) {
           alert(res);
