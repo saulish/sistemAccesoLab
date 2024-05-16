@@ -1,9 +1,5 @@
 <?php
 require "conexion.php";
-define ("HOST",'Localhost');
-define("BD",'sistemaaccesolab');
-define("USER_BD",'root');
-define("PASS_BD",'');
 
 
 $conexion = conecta();
