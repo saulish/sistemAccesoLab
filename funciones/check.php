@@ -2,7 +2,7 @@
 require "conexion.php";
 $conexion = conecta();
 
-
+$codigoo = $_REQUEST['codigo'];
 $huella = $_REQUEST['huella'];
 $tarjeta = $_REQUEST['tarjeta'];
 $facial = $_REQUEST['facial'];
@@ -12,8 +12,7 @@ $facial = $_REQUEST['facial'];
 
 
 
-
-$sql = "SELECT codigo FROM datos_biometricos WHERE Dhuella='$huella' OR Dfacial='$facial' OR Dtarjeta='$tarjeta'";
+$sql = "SELECT codigo FROM datos_biometricos WHERE codigo='$codigoo' OR Dhuella='$huella' OR Dfacial='$facial' OR Dtarjeta='$tarjeta'";
 
 
 $resDatos = $conexion->query($sql);
