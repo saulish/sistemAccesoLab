@@ -6,37 +6,47 @@
     <script src="funciones/jquery-3.7.1.min.js"></script>
     <style>
         body {
-        
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            background-color: #f0f0f0;
         }
-        
+
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #333;
+        }
+
         form {
             width: 300px;
             padding: 20px;
-            background-color: #f2f2f2;
+            background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
         }
 
         label {
             display: block;
             margin-bottom: 5px;
+            font-weight: bold;
         }
 
         input[type="text"] {
-            width: calc(100% - 10px);
+            width: 100%;
             padding: 8px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            box-sizing: border-box;
         }
 
-        input[type="submit"] {
+        button {
             width: 100%;
             padding: 10px 20px;
             background-color: #4CAF50;
@@ -44,34 +54,43 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        input[type="submit"]:hover {
+        button:hover {
             background-color: #45a049;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    Registro de usuarios<br>
+    <h1>Registro de usuarios</h1>
     <form>
         <label for="codigo">Codigo:</label>
-        <input type="text" id="codigo" name="codigo" required><br>
-    
+        <input type="text" id="codigo" name="codigo" required>
+
         <label for="huella">Huella:</label>
-        <input type="text" id="huella" name="huella" required><br>
-    
+        <input type="text" id="huella" name="huella" required>
+
         <label for="tarjeta">Tarjeta:</label>
-        <input type="text" id="tarjeta" name="tarjeta" required><br>
-    
+        <input type="text" id="tarjeta" name="tarjeta" required>
+
         <label for="facial">Facial:</label>
-        <input type="text" id="facial" name="facial" required><br>
-    
-        <!-- Cambia el tipo de botón a "button" -->
+        <input type="text" id="facial" name="facial" required>
+
         <button type="button" onclick="enviarDatos()">Enviar</button>
-
-
     </form>
     <a href="check.html">Verificar</a>
-    
 </body>
 </html>
