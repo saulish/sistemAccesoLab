@@ -5,26 +5,38 @@
     <script src="funciones/funciones1.js"></script>
     <script src="funciones/jquery-3.7.1.min.js"></script>
     <style>
+        /* Resetting default margin and padding */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
+            background-color: #496ed1;
+            color: #fff;
         }
 
         form {
             width: 300px;
             padding: 20px;
-            background-color: #f2f2f2;
+            background-color: #ffffff;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; /* Added margin-top to separate form from h1 */
+            position: relative; /* Added for absolute positioning of the button */
         }
 
         label {
             display: block;
             margin-bottom: 5px;
+            color: #333;
         }
 
         input[type="text"] {
@@ -43,15 +55,47 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
         input[type="submit"]:hover {
             background-color: #45a049;
         }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #connectButton {
+            padding: 10px 20px;
+            background-color: #6f8ad4; /* Same color as background */
+            color: rgb(255, 255, 255);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-bottom: 20px; /* Added margin to separate button from form */
+        }
+
+        #connectButton:hover {
+            background-color: #3c5c97; /* Darker color on hover */
+        }
+
+        a {
+            text-align: center;
+            margin-top: 20px; /* Added margin-top for spacing */
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
-    Hacer check<br>
+    <h1>Hacer check</h1>
     <button id="connectButton">Conectar al puerto serial</button>
     <form id="serialForm">
         <label for="codigo">Codigo:</label>
