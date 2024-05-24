@@ -95,7 +95,7 @@
     </style>
 </head>
 <body>
-    <h1>Hacer check</h1>
+    Hacer check<br>
     <button id="connectButton">Conectar al puerto serial</button>
     <form id="serialForm">
         <label for="codigo">Codigo:</label>
@@ -114,6 +114,11 @@
         <button type="button" onclick="hacerCheck()">Enviar</button>
 
         <script>
+            let procesarDatosC = false; // Bandera para indicar si se deben procesar los datos recibidos
+            let procesarDatosH = false;
+            let procesarDatosN = false;
+            let procesarDatosCa = false;
+
             async function connectToSerial() {
                 try {
                     // Solicitar acceso al puerto serial
@@ -130,13 +135,57 @@
                                 const { value, done } = await reader.read();
                                 if (done) break;
                                 const decoder = new TextDecoder();
-                                const decodedValue = decoder.decode(value);
-                                // Actualizar la página con los datos decodificados
-                                document.getElementById('codigo').value += decodedValue;
-                                // Verificar si el campo "codigo" tiene 9 caracteres
-                                if (document.getElementById('codigo').value.length === 9) {
-                                    hacerCheck();
-                                    document.getElementById('codigo').value = "";
+                                let decodedValue = decoder.decode(value);
+
+                                // Verificar si se recibió un "0" por el puerto serial
+                                if (decodedValue === "0") {
+                                    procesarDatosC = true;
+                                    alert("Se recibio un 0 por el puerto serial");
+                                    decodedValue = "";
+                                }
+
+                                if (decodedValue === "1") {
+                                    procesarDatosH = true;
+                                    alert("Se recibio un 1 por el puerto serial");
+                                    decodedValue = "";
+                                }
+
+                                if (decodedValue === "2") {
+                                    procesarDatosN = true;
+                                    alert("Se recibio un 2 por el puerto serial");
+                                    decodedValue = "";
+                                }
+
+                                if (decodedValue === "3") {
+                                    procesarDatosCa = true;
+                                    alert("Se recibio un 3 por el puerto serial");
+                                    decodedValue = "";
+                                }
+
+                                // Si se debe procesar los datos, actualizar la página con los datos decodificados
+                                if (procesarDatosC) {
+                                    document.getElementById('codigo').value += decodedValue;
+                                    // Verificar si el campo "codigo" tiene 9 caracteres
+                                    if (document.getElementById('codigo').value.length === 9) {
+                                        hacerCheck();
+                                        document.getElementById('codigo').value = "";
+                                        procesarDatosC = false; // Reiniciar la bandera después de procesar los datos
+                                    }
+                                }
+
+                                if (procesarDatosH) {
+                                    alert("Huella check");
+                                    procesarDatosH = false;
+                                }
+
+                                if (procesarDatosN) {
+                                    alert("NFC check");
+                                    procesarDatosN = false;
+                                }
+
+                                if (procesarDatosCa) {
+                                    alert("Cara check");
+                                    procesarDatosCa = false;
                                 }
                             }
                         } finally {
