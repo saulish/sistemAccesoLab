@@ -53,15 +53,16 @@ CREATE TABLE `usuarios` (
   `codigo` int(10) NOT NULL,
   `telefono` int(10) NOT NULL,
   `nombre` varchar(100) NOT NULL,
-  `activo` tinyint(1) NOT NULL
+  `activo` tinyint(1) NOT NULL,
+  `turno` tinyint(1) NOT NULL DEFAULT 0  -- Añadir la columna 'turno' con tipo tinyint
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuarios`
 --
 
-INSERT INTO `usuarios` (`id`, `codigo`, `telefono`, `nombre`, `activo`) VALUES
-(1, 218879131, 2147483647, 'Saul', 1);
+INSERT INTO `usuarios` (`id`, `codigo`, `telefono`, `nombre`, `activo`, `turno`) VALUES
+(1, 218879131, 2147483647, 'Saul', 1, 0);  -- Asignar turno matutino (0) por defecto, 1 medio dia, 2 vespertino
 
 --
 -- Índices para tablas volcadas
