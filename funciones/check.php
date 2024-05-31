@@ -14,37 +14,55 @@ if ($resDatos->num_rows > 0) {
     $row = $resDatos->fetch_assoc();
     $codigo = $row['codigo'];
 
-    $sqlNombre = "SELECT nombre, activo, turno FROM usuarios WHERE codigo=$codigo";
+    $sqlNombre = "SELECT id, nombre, activo FROM usuarios WHERE codigo=$codigo";
     $resNombre = $conexion->query($sqlNombre);
     if ($resNombre) {
         $row = $resNombre->fetch_assoc();
+        $user_id = $row['id'];
         $nombre = $row['nombre'];
         $activo = $row['activo'];
-        $turno = $row['turno'];
 
-        // Function to check if the current time is within the allowed shift time
-        function isWithinShift($turno) {
-            // Get the current time
+        // Function to check if the current time is within the allowed shift time and day
+        function isWithinShift($shift) {
+            // Get the current time and day
             $currentDateTime = new DateTime('now', new DateTimeZone('America/Mexico_City')); // Adjust timezone as needed
             $currentTime = $currentDateTime->format('H:i');
+            $currentDay = $currentDateTime->format('N'); // 1 (for Monday) through 7 (for Sunday)
             error_log("Current Time: $currentTime"); // Log current time for debugging
+            error_log("Current Day: $currentDay"); // Log current day for debugging
 
-            switch ($turno) {
-                case 0: // Matutino
-                    return $currentTime >= '07:00' && $currentTime <= '12:00';
-                case 1: // Medio Dia
-                    return $currentTime >= '12:00' && $currentTime <= '16:00';
-                case 2: // Vespertino
-                    return $currentTime >= '16:00' && $currentTime <= '20:00';
+            switch ($shift) {
+                case 'matutino': // Matutino (Monday to Friday, 7am to 12pm)
+                    return $currentDay >= 1 && $currentDay <= 5 && $currentTime >= '07:00' && $currentTime <= '12:00';
+                case 'medio dia': // Medio Dia (Monday to Friday, 12pm to 4pm)
+                    return $currentDay >= 1 && $currentDay <= 5 && $currentTime >= '12:00' && $currentTime <= '16:00';
+                case 'vespertino': // Vespertino (Monday to Friday, 4pm to 8pm)
+                    return $currentDay >= 1 && $currentDay <= 5 && $currentTime >= '16:00' && $currentTime <= '20:00';
+                case 'sabatino': // Sabatino (Saturday, 7am to 4pm)
+                    return $currentDay == 6 && $currentTime >= '07:00' && $currentTime <= '16:00';
                 default:
                     return false;
             }
         }
 
-        // Check if the current time is within the user's shift
-        if (!isWithinShift($turno)) {
-            echo "Fuera de turno";
-            error_log("Shift: $turno, Fuera de turno"); // Log shift and message for debugging
+        // Query to get the user's shift for the current day
+        $currentDayOfWeek = (new DateTime('now', new DateTimeZone('America/Mexico_City')))->format('l'); // e.g., 'Monday'
+        $sqlShift = "SELECT shift FROM turno_personalizado WHERE user_id=$user_id AND day_of_week='$currentDayOfWeek'";
+        $resShift = $conexion->query($sqlShift);
+        if ($resShift->num_rows > 0) {
+            $rowShift = $resShift->fetch_assoc();
+            $shift = $rowShift['shift'];
+
+            // Check if the current time is within the user's shift
+            if (!isWithinShift($shift)) {
+                echo "Fuera de turno";
+                error_log("Shift: $shift, Fuera de turno"); // Log shift and message for debugging
+                $conexion->close();
+                exit();
+            }
+        } else {
+            echo "No hay turno asignado para hoy";
+            error_log("No shift assigned for today"); // Log no shift assigned for debugging
             $conexion->close();
             exit();
         }
