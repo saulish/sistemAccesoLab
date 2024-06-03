@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Serial Data Viewer</title>
+</head>
+<body>
+    <div id="serialData"></div>
+    <button id="connectButton">Conectar al puerto serial</button>
+
+    <script>
+        async function connectToSerial() {
+            try {
+                // Solicitar acceso al puerto serial
+                const port = await navigator.serial.requestPort();
+
+                // Abrir el puerto serial
+                await port.open({ baudRate: 9600 });
+
+                // Leer datos del puerto serial continuamente
+                while (true) {
+                    const reader = port.readable.getReader();
+                    try {
+                        while (true) {
+                            const { value, done } = await reader.read();
+                            if (done) break;
+                            const decoder = new TextDecoder();
+                            const decodedValue = decoder.decode(value);
+                            // Actualizar la página con los datos decodificados
+                            document.getElementById('serialData').innerText += decodedValue;
+                        }
+                    } finally {
+                        reader.releaseLock();
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Manejar el clic en el botón de conexión
+        document.getElementById('connectButton').addEventListener('click', () => {
+            connectToSerial();
+        });
+    </script>
+</body>
+</html>
