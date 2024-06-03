@@ -2,8 +2,12 @@
 <html>
 <head>
     <title>Check</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
     <script src="funciones/funciones1.js"></script>
-    <script src="funciones/jquery-3.7.1.min.js"></script>
+    <script src="funciones/script.js"></script>
+    <script src="modelo1.js"></script>
     <style>
         /* Resetting default margin and padding */
         * {
@@ -96,8 +100,12 @@
 </head>
 <body>
     <h1>Hacer check</h1>
-    <br>
+
     <button id="connectButton">Conectar al puerto serial</button>
+    <label for="videoSource">Select Camera: </label>
+    <select id="videoSource"></select>
+    <video id="video" width="640" height="480" autoplay muted></video>
+    <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
     <form id="serialForm">
         <label for="codigo">Codigo:</label>
         <input type="text" id="codigo" name="codigo" ><br>
@@ -110,102 +118,123 @@
     
         <label for="facial">Facial:</label>
         <input type="text" id="facial" name="facial" ><br>
-    
+        
+        <div id="carpeta">
+            <input type="file" id="image-folder" webkitdirectory directory multiple>
+            <button type="button" onclick="startTraining()">Start Training</button>
+        </div>
+        <div id="imagen">
+            <input type="file" id="predict-image" accept="image/*">
+            <button type="button" onclick="makePrediction()">Predict</button>
+        </div>
+        
         <!-- Cambia el tipo de botón a "button" -->
         <button type="button" onclick="hacerCheck()">Enviar</button>
+        <button type="button" onclick="iniciarDeteccionFacial()" id="startButton">Start Detection</button>
+
+        <br>
+        <div id="status"></div>
+        <br>
 
         <script>
-            let procesarDatosC = false; // Bandera para indicar si se deben procesar los datos recibidos
+        document.addEventListener('DOMContentLoaded', () => {
+            let procesarDatosC = false;
             let procesarDatosH = false;
             let procesarDatosN = false;
             let procesarDatosCa = false;
 
             async function connectToSerial() {
                 try {
-                    // Solicitar acceso al puerto serial
-                    const port = await navigator.serial.requestPort();
-
-                    // Abrir el puerto serial
+                    port = await navigator.serial.requestPort();
                     await port.open({ baudRate: 9600 });
-
-                    // Leer datos del puerto serial continuamente
-                    while (true) {
-                        const reader = port.readable.getReader();
-                        try {
-                            while (true) {
-                                const { value, done } = await reader.read();
-                                if (done) break;
-                                const decoder = new TextDecoder();
-                                let decodedValue = decoder.decode(value);
-
-                                // Verificar si se recibió un "0" por el puerto serial
-                                if (decodedValue === "0") {
-                                    procesarDatosC = true;
-                                    alert("Se recibio un 0 por el puerto serial");
-                                    decodedValue = "";
-                                }
-
-                                if (decodedValue === "1") {
-                                    procesarDatosH = true;
-                                    alert("Se recibio un 1 por el puerto serial");
-                                    decodedValue = "";
-                                }
-
-                                if (decodedValue === "2") {
-                                    procesarDatosN = true;
-                                    alert("Se recibio un 2 por el puerto serial");
-                                    decodedValue = "";
-                                }
-
-                                if (decodedValue === "3") {
-                                    procesarDatosCa = true;
-                                    alert("Se recibio un 3 por el puerto serial");
-                                    decodedValue = "";
-                                }
-
-                                // Si se debe procesar los datos, actualizar la página con los datos decodificados
-                                if (procesarDatosC) {
-                                    document.getElementById('codigo').value += decodedValue;
-                                    // Verificar si el campo "codigo" tiene 9 caracteres
-                                    if (document.getElementById('codigo').value.length === 9) {
-                                        hacerCheck();
-                                        document.getElementById('codigo').value = "";
-                                        procesarDatosC = false; // Reiniciar la bandera después de procesar los datos
-                                    }
-                                }
-
-                                if (procesarDatosH) {
-                                    alert("Huella check");
-                                    procesarDatosH = false;
-                                }
-
-                                if (procesarDatosN) {
-                                    alert("NFC check");
-                                    procesarDatosN = false;
-                                }
-
-                                if (procesarDatosCa) {
-                                    alert("Cara check");
-                                    procesarDatosCa = false;
-                                }
-                            }
-                        } finally {
-                            reader.releaseLock();
-                        }
-                    }
+                    readFromSerial();
                 } catch (error) {
                     console.error('Error:', error);
                 }
             }
 
-            // Manejar el clic en el botón de conexión
-            document.getElementById('connectButton').addEventListener('click', () => {
-                connectToSerial();
-            });
+            async function readFromSerial() {
+                const reader = port.readable.getReader();
+                try {
+                    while (true) {
+                        const { value, done } = await reader.read();
+                        if (done) break;
+                        const decoder = new TextDecoder();
+                        let decodedValue = decoder.decode(value);
+
+                        switch (decodedValue) {
+                            case "a":
+                                procesarDatosC = true;
+                                procesarDatosH = false;
+                                procesarDatosN = false;
+                                procesarDatosCa = false;
+                                decodedValue = "";
+                                break;
+                            case "b":
+                                procesarDatosH = true;
+                                procesarDatosC = false;
+                                procesarDatosN = false;
+                                procesarDatosCa = false;
+                                decodedValue = "";
+                                break;
+                            case "c":
+                                procesarDatosN = true;
+                                procesarDatosC = false;
+                                procesarDatosH = false;
+                                procesarDatosCa = false;
+                                decodedValue = "";
+                                break;
+                            case "d":
+                                procesarDatosCa = true;
+                                procesarDatosC = false;
+                                procesarDatosH = false;
+                                procesarDatosN = false;
+                                decodedValue = "";
+                                break;
+                            case "x":
+                                procesarDatosCa = false;
+                                procesarDatosC = false;
+                                procesarDatosH = false;
+                                procesarDatosN = false;
+                                decodedValue = "";
+                                break;
+                            default:
+                                if (procesarDatosC) {
+                                    if (document.getElementById('codigo').value.length < 9) {
+                                        document.getElementById('codigo').value += decodedValue;
+                                    }
+                                    if (document.getElementById('codigo').value.length === 9) {
+                                        hacerCheck();
+                                        document.getElementById('codigo').value = "";
+                                        procesarDatosC = false;
+                                    }
+                                }
+                                if (procesarDatosH) {
+                                    alert("Huella check");
+                                    procesarDatosH = false;
+                                }
+                                if (procesarDatosN) {
+                                    alert("NFC check");
+                                    procesarDatosN = false;
+                                }
+                                if (procesarDatosCa) {
+                                    iniciarDeteccionFacial();
+                                    procesarDatosCa = false;
+                                }
+                                break;
+                        }
+                    }
+                } finally {
+                    reader.releaseLock();
+                }
+            }
+
+            document.getElementById('connectButton').addEventListener('click', connectToSerial);
 
             document.getElementById('serialForm').addEventListener('submit', (event) => {
-            event.preventDefault();
+                event.preventDefault();
             });
+        });
         </script>
     </form>
     <a href="index.html">Regresar</a>
