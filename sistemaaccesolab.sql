@@ -63,7 +63,29 @@ CREATE TABLE `usuarios` (
 INSERT INTO `usuarios` (`id`, `codigo`, `telefono`, `nombre`, `activo`) VALUES
 (1, 218879131, 2147483647, 'Saul', 1);
 
+-- --------------------------------------------------------
+
 --
+-- Estructura de tabla para la tabla `turno_personalizado`
+--
+
+CREATE TABLE `turno_personalizado` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `day_of_week` varchar(10) NOT NULL,
+  `shift` varchar(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`user_id`) REFERENCES `usuarios`(`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+INSERT INTO `turno_personalizado` (`user_id`, `day_of_week`, `shift`) VALUES
+(5, 'Monday', 'matutino'),
+(5, 'Tuesday', 'matutino'),
+(5, 'Wednesday', 'matutino'),
+(5, 'Thursday', 'vespertino'),
+(5, 'Friday', 'vespertino');
+
 -- Índices para tablas volcadas
 --
 
@@ -94,6 +116,13 @@ ALTER TABLE `datos_biometricos`
 --
 ALTER TABLE `usuarios`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- AUTO_INCREMENT de la tabla `turno_personalizado`
+--
+ALTER TABLE `turno_personalizado`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
