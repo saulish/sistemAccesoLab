@@ -1,4 +1,4 @@
-//Facial
+//FUNCIONES PARA LA DETECCION FACIAL
 async function setupCamera(selectedDeviceId) {
     const video = document.getElementById('video');
     const stream = await navigator.mediaDevices.getUserMedia({

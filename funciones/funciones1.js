@@ -1,5 +1,5 @@
 let port;
-
+//FUNCIONES PARA HACER EL CHECK
 function actualizarDatos() {
     let codigo = document.getElementById('codigo').value;
     let huella = document.getElementById('huella').value;
