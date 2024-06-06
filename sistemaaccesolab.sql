@@ -26,12 +26,13 @@ CREATE TABLE `datos_biometricos` (
   `Dhuella` varchar(100) NOT NULL,
   `Dfacial` varchar(100) NOT NULL,
   `DTarjeta` varchar(100) NOT NULL,
+  `turno` int(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Insertar datos en `datos_biometricos`
-INSERT INTO `datos_biometricos` (`id`, `codigo`, `Dhuella`, `Dfacial`, `DTarjeta`) VALUES
-(1, 218879131, 'huella1', 'facil1', 'tarjeta1');
+INSERT INTO `datos_biometricos` (`id`, `codigo`, `Dhuella`, `Dfacial`, `DTarjeta`,`turno`) VALUES
+(1, 218879131, 'huella1', 'facil1', 'tarjeta1', 1);
 
 -- Crear tabla `usuarios`
 CREATE TABLE `usuarios` (
@@ -56,14 +57,6 @@ CREATE TABLE `turno_personalizado` (
   PRIMARY KEY (`id`),
   FOREIGN KEY (`user_id`) REFERENCES `usuarios`(`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- Insertar datos en `turno_personalizado`
-INSERT INTO `turno_personalizado` (`user_id`, `day_of_week`, `shift`) VALUES
-(5, 'Monday', 'matutino'),
-(5, 'Tuesday', 'matutino'),
-(5, 'Wednesday', 'matutino'),
-(5, 'Thursday', 'vespertino'),
-(5, 'Friday', 'vespertino');
 
 -- Establecer AUTO_INCREMENT para las tablas
 ALTER TABLE `datos_biometricos`
