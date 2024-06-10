@@ -4,8 +4,7 @@ function actualizarDatos() {
     let codigo = document.getElementById('codigo').value;
     let huella = document.getElementById('huella').value;
     let tarjeta = document.getElementById('tarjeta').value;
-    let facial = document.getElementById('facial').value;
-  
+    //let facial = document.getElementById('facial').value;
     $.ajax({
       url:'funciones/updateDatos.php',
       type: 'POST',
@@ -22,13 +21,14 @@ function actualizarDatos() {
       }
     });
 }
-  
+
 function enviarDatos() {
     let codigo = document.getElementById('codigo').value;
     let huella = document.getElementById('huella').value;
     let tarjeta = document.getElementById('tarjeta').value;
     let facial = document.getElementById('facial').value;
-  
+    console.log(codigo);
+
     $.ajax({
       url:'funciones/setDatosBio.php',
       type: 'POST',
@@ -36,11 +36,16 @@ function enviarDatos() {
       data: 
       'codigo=' + codigo + '&huella=' + huella + '&tarjeta=' + tarjeta + '&facial=' + facial,
       
-      success: function (res) {
-        
+      success: function(res) {
+        const estado=document.getElementById('status');
+
+        estado.innerText = res;
+        setTimeout(() => {
+            estado.innerText = '';
+        }, 3000); // 3000 milisegundos = 3 segundos
       },
       error: function() {
-        alert('Error: archivo no encontrado');
+          alert('Error: archivo no encontrado');
       }
     });
   }
@@ -98,7 +103,26 @@ function hacerCheckRecibir(codigo,huella,tarjeta,facial){
          'codigo=' + codigo +'&huella=' + huella + '&tarjeta=' + tarjeta + '&facial=' + facial,
         
         success: function(res) {
-          alert(res);
+          const partes = res.split(",");
+
+          // Asignar las partes a las variables
+          const codigoRes = partes[0].trim();
+          const nombre = partes[1].trim();
+          switch (codigoRes) {
+            case '0':
+              alert('Bienvenido '+nombre);
+              break;
+            case '1':
+              alert('Datos incorrectos ');
+              break;
+            case '4':
+              alert('Adios '+nombre);
+              break;
+            case '2':
+              alert('Error '+nombre);
+              break;
+          }
+
   
         },
         error: function() {
@@ -107,7 +131,6 @@ function hacerCheckRecibir(codigo,huella,tarjeta,facial){
       });
   
   }
-
 
 
 

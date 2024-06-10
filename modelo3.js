@@ -77,7 +77,6 @@ async function loadImageFromBase64(base64) {
 //ENTRENAR POR CARPETA
 async function startTraining() {
   const input = document.getElementById('image-folder');
-  const result = document.getElementById('result');
   console.log(input.files);
   const status = document.getElementById('training-status');
   if (input.files.length === 0) {
@@ -242,122 +241,11 @@ async function loadImage(file) {
 
   return promise;
 }
-  async function makePrediction(imagen) {
-    
-    const input = document.getElementById('predict-image');
-    const result = document.getElementById('prediction-result');
-    let file;
-    if(input.files.length !== 0){
-      file = input.files[0];
-    }else if(imagen!=null){
-      file=imagen
-    }else{
-      alert('Please select an image to predict.');
-      return;
-    }
-
-    try{ 
-
-      const image = await loadImage(file);
-
-      const resizedImage = tf.image.resizeBilinear(image, [32, 32]);
-      const inputTensor = resizedImage.expandDims(0);
-    
-      const prediction = model.predict(inputTensor);
-      const predictedClass = (await prediction.argMax(-1).data())[0];
-    
-      document.getElementById('prediction-result').innerText = `Predicted class: ${predictedClass}`;
-      result.innerText = `Predicted class: ${predictedClass}`;
-      clearImageFields();
-      hacerCheckRecibir(predictedClass);
-    }catch(error){
-      console.log(error)
-    }
-  }
-  function clearImageFields() {
-    const input = document.getElementById('predict-image');
-    input.value = '';
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-  }
-  
-
-
-
-/*
-const tomarDrive=document.getElementById('tomar-drive')
-tomarDrive.addEventListener('click', async () => {
-  await startTrainingFromBase64(4);
-});
-*/
-
-async function setupCamera() {
-  const video = document.getElementById('video');
-  const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-  video.srcObject = stream;
-
-  return new Promise((resolve) => {
-    video.onloadedmetadata = () => {
-      resolve(video);
-    };
-  });
-}
-
-async function capturePhoto() {
-  const video = document.getElementById('video');
-  const canvas = document.getElementById('canvas');
-  const context = canvas.getContext('2d');
-  context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-  return new Promise((resolve) => {
-    canvas.toBlob((blob) => {
-      resolve(new File([blob], 'captured_image.png', { type: 'image/png' }));
-    }, 'image/png');
-  });
-}
-
-async function loadImage(file) {
-  const img = new Image();
-  const reader = new FileReader();
-
-  const promise = new Promise((resolve, reject) => {
-    reader.onload = () => {
-      img.src = reader.result;
-      img.onload = () => {
-        resolve(tf.browser.fromPixels(img));
-      };
-      img.onerror = reject;
-    };
-    reader.readAsDataURL(file);
-  });
-
-  return promise;
-}
-window.onload = async () => {
-  document.getElementById('capture-button').addEventListener('click', async () => {
-    const capturedImage = await capturePhoto();
-    makePrediction(capturedImage);
-  });
-}
-
-
-window.onload = async () => {
-  await setupCamera();
-};
 
 
 function guardarModelo(){
   if(confirm("¿Desea subir el modelo?")){
     saveModelAndUpload();
-    //PASA A GUARDAR EL MODELO
 
   }
 }
- function trainToPred(){
-    const archivo=document.getElementById('carpeta');
-    archivo.style.zIndex=-1
-    const imagen=document.getElementById('imagen')
-    imagen.style.zIndex=1
-  }
-

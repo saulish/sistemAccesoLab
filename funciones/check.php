@@ -7,13 +7,13 @@ $huella = $_REQUEST['huella'];
 $tarjeta = $_REQUEST['tarjeta'];
 $facial = $_REQUEST['facial'];
 
-$sql = "SELECT codigo, turno FROM datos_biometricos WHERE codigo='$codigoo' OR Dhuella='$huella' OR Dfacial='$facial' OR Dtarjeta='$tarjeta'";
+$sql = "SELECT codigo FROM datos_biometricos WHERE codigo='$codigoo' OR Dhuella='$huella' OR Dfacial='$facial' OR Dtarjeta='$tarjeta'";
 $resDatos = $conexion->query($sql);
 
 if ($resDatos->num_rows > 0) {
     $row = $resDatos->fetch_assoc();
     $codigo = $row['codigo'];
-    $shift = $row['turno']; // Obtener el turno desde la tabla datos_biometricos
+    //$shift = $row['turno']; // Obtener el turno desde la tabla datos_biometricos
 
     $sqlNombre = "SELECT id, nombre, activo FROM usuarios WHERE codigo=$codigo";
     $resNombre = $conexion->query($sqlNombre);
@@ -23,7 +23,7 @@ if ($resDatos->num_rows > 0) {
         $user_id = $row['id'];
         $nombre = $row['nombre'];
         $activo = $row['activo'];
-
+        
         // Function to check if the current time is within the allowed shift time and day
         function isWithinShift($shift) {
             // Get the current time and day
@@ -49,14 +49,14 @@ if ($resDatos->num_rows > 0) {
                     return false;
             }
         }
-
+        /*
         // Check if the current time is within the user's shift
         if (!isWithinShift($shift)) {
             echo "Fuera de turno";
             error_log("Shift: $shift, Fuera de turno"); // Log shift and message for debugging
             exit();
         }
-        
+        */
         if ($activo == 0) {
             $sqlCambio = "UPDATE usuarios SET activo=1 WHERE codigo=$codigo";
             $resCambio = $conexion->query($sqlCambio);

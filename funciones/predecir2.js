@@ -4,7 +4,6 @@ function setNewModel(newModel){
 }
 
 
-
 async function setupCamera() {
     const video = document.getElementById('video');
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
@@ -63,10 +62,7 @@ async function setupCamera() {
 
 
   
-  // Inicializa la cámara cuando se carga la página
-  window.onload = async () => {
-    await setupCamera();
-  };
+
 
   async function makePrediction(file) {
     
@@ -93,10 +89,4 @@ async function setupCamera() {
         }catch(error){
             console.log(error)
         }
-  }
-  function clearImageFields() {
-
-    const canvas = document.getElementById('canvas');
-    const context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
   }

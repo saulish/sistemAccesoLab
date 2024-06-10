@@ -41,7 +41,17 @@ async function loadModelFromGoogleDrive(scriptURL) {
         ));
         model=modelitito;
         estadoModelo.innerText='Modelo cargado correctamente';
+        await setupCamera();
         modeloCargado=true;
+
+        
+        const outputLayer = model.layers[model.layers.length - 1];
+
+        // Obtener la cantidad de unidades en la capa de salida (número de clases)
+        const numLabels = outputLayer.units;
+    
+        console.log(`El modelo ha sido entrenado para reconocer ${numLabels} etiquetas.`);
+        return numLabels;
 
         
 
