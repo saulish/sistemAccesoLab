@@ -1,6 +1,7 @@
 <?php
 require "conexion.php";
 $conexion = conecta();
+error_log("Si entra en el PHP"); // Log para verificar que el PHP se ejecuta
 
 $codigoo = $_REQUEST['codigo'];
 $huella = $_REQUEST['huella'];
@@ -14,6 +15,7 @@ if ($resDatos->num_rows > 0) {
     $row = $resDatos->fetch_assoc();
     $codigo = $row['codigo'];
     $shift = $row['turno']; // Obtener el turno desde la tabla datos_biometricos
+    error_log("Código: $codigo, Turno: $shift"); // Log para verificar que los datos se obtuvieron correctamente
 
     $sqlNombre = "SELECT id, nombre, activo FROM usuarios WHERE codigo=$codigo";
     $resNombre = $conexion->query($sqlNombre);
@@ -24,39 +26,12 @@ if ($resDatos->num_rows > 0) {
         $nombre = $row['nombre'];
         $activo = $row['activo'];
 
-        // Function to check if the current time is within the allowed shift time and day
-        function isWithinShift($shift) {
-            // Get the current time and day
-            $currentDateTime = new DateTime('now', new DateTimeZone('America/Mexico_City')); // Adjust timezone as needed
-            $currentTime = $currentDateTime->format('H:i');
-            $currentDay = $currentDateTime->format('N'); // 1 (for Monday) through 7 (for Sunday)
-            error_log("Current Time: $currentTime"); // Log current time for debugging
-            error_log("Current Day: $currentDay"); // Log current day for debugging
-
-            switch ($shift) {
-                case 1: // Matutino (Monday to Friday, 7am to 12pm)
-                    return $currentDay >= 1 && $currentDay <= 5 && $currentTime >= '07:00' && $currentTime <= '12:00';
-                case 2: // Vespertino (Monday to Friday, 4pm to 8pm)
-                    return $currentDay >= 1 && $currentDay <= 5 && $currentTime >= '16:00' && $currentTime <= '20:00';
-                case 3: // Nocturno (Monday to Friday, 8pm to 6am)
-                    return ($currentDay >= 1 && $currentDay <= 5 && $currentTime >= '20:00') || 
-                           ($currentDay >= 2 && $currentDay <= 6 && $currentTime <= '06:00');
-                case 4: // Sabatino (Saturday, 7am to 4pm)
-                    return $currentDay == 6 && $currentTime >= '07:00' && $currentTime <= '16:00';
-                case 5: // Turno 5 (puede acceder a cualquier hora)
-                    return true;
-                default:
-                    return false;
-            }
-        }
-
-        // Check if the current time is within the user's shift
         if (!isWithinShift($shift)) {
             echo "Fuera de turno";
-            error_log("Shift: $shift, Fuera de turno"); // Log shift and message for debugging
+            error_log("Shift: $shift, Fuera de turno");
             exit();
         }
-        
+
         if ($activo == 0) {
             $sqlCambio = "UPDATE usuarios SET activo=1 WHERE codigo=$codigo";
             $resCambio = $conexion->query($sqlCambio);
@@ -75,12 +50,44 @@ if ($resDatos->num_rows > 0) {
             }
         }
     } else {
-        // Devuelve 2 si hay un error al obtener el nombre
-        echo "2,";
+        echo "2,"; // Error al obtener el nombre
     }
 } else {
-    // Devuelve 1 si los datos son incorrectos
-    echo "1,";
+    echo "1,"; // Datos incorrectos
 }
 
+function isWithinShift($shift) {
+    $currentDateTime = new DateTime('now', new DateTimeZone('America/Mexico_City')); // Adjust timezone as needed
+    $currentTime = $currentDateTime->format('H:i');
+    $currentDay = $currentDateTime->format('N'); // 1 (for Monday) through 7 (for Sunday)
+    error_log("Current Time: $currentTime"); // Log current time for debugging
+    error_log("Current Day: $currentDay"); // Log current day for debugging
+    error_log("Shift: $shift"); // Log shift for debugging
+
+    $withinShift = false; // Default value
+
+    switch ($shift) {
+        case 1: // Matutino (Monday to Friday, 8am to 12pm)
+            $withinShift = $currentDay >= 1 && $currentDay <= 5 && $currentTime >= '08:00' && $currentTime <= '12:00';
+            break;
+        case 2: // Medio día (Monday to Friday, 12pm to 4pm)
+            $withinShift = $currentDay >= 1 && $currentDay <= 5 && $currentTime >= '12:00' && $currentTime <= '16:00';
+            break;
+        case 3: // Vespertino (Monday to Friday, 4pm to 8pm)
+            $withinShift = $currentDay >= 1 && $currentDay <= 5 && $currentTime >= '16:00' && $currentTime <= '20:00';
+            break;
+        case 4: // Sabatino (Saturday, 7am to 12pm)
+            $withinShift = $currentDay == 6 && $currentTime >= '07:00' && $currentTime <= '12:00';
+            break;
+        case 5: // Turno abierto (puede acceder a cualquier hora)
+            $withinShift = true;
+            break;
+        default:
+            error_log("Invalid shift: $shift");
+            break;
+    }
+
+    error_log("Within Shift: " . ($withinShift ? "true" : "false")); // Log result for debugging
+    return $withinShift;
+}
 ?>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +18,8 @@
         body {
             font-family: Arial, sans-serif;
             display: flex;
-            flex-direction: column; /* Changed flex-direction to column */
+            flex-direction: column;
+            /* Changed flex-direction to column */
             justify-content: center;
             align-items: center;
             min-height: 100vh;
@@ -68,7 +70,8 @@
             margin-bottom: 20px;
             position: absolute;
             top: 50px;
-            width: 100%; /* Center the heading horizontally */
+            width: 100%;
+            /* Center the heading horizontally */
         }
 
         a {
@@ -84,23 +87,34 @@
         }
     </style>
 </head>
+
 <body>
     <h1>Registro de usuarios</h1>
+    <br>
     <form>
         <label for="codigo">Codigo:</label>
         <input type="text" id="codigo" name="codigo" required>
-    
+
         <label for="huella">Huella:</label>
         <input type="text" id="huella" name="huella" required>
-    
+
         <label for="tarjeta">Tarjeta:</label>
         <input type="text" id="tarjeta" name="tarjeta" required>
-    
+
         <label for="facial">Facial:</label>
         <input type="text" id="facial" name="facial" required>
-    
+        <label for="horario">Horario:</label>
+        <select id="horario" name="horario">
+            <option value="1">Matutino</option>
+            <option value="2">Medio dia</option>
+            <option value="3">Vespertino</option>
+            <option value="4">Sabatino</option>
+        </select>
+
         <button type="button" onclick="enviarDatos()">Enviar</button>
     </form>
     <a href="check.html">Verificar</a>
+    <script src="funciones/funciones1.js"></script>
 </body>
+
 </html>
