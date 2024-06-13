@@ -3,11 +3,11 @@
 
 async function saveModelAndUpload() {
     await model.save('indexeddb://modeloPendejo');
-    console.log('Peso de modelo');
-    console.log(model.getWeights()[0].arraySync());
     saveModelToGoogleDrive();
 
 }
+
+
 async function saveModelToGoogleDrive(modelName='modeloPendejo', scriptURL='https://script.google.com/macros/s/AKfycbw9S9lIe0S-J2lgWqhucGqBIm5kjXpTPQdl6iAJeMkgkCOt9gTmRvYgPIv7bCFMAVD9Hg/exec') {
   try {
       const modelJson = await model.save(tf.io.withSaveHandler(async (artifacts) => {

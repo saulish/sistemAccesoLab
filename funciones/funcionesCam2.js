@@ -2,7 +2,7 @@
   //document.addEventListener('DOMContentLoaded', () => {
 
     async function tomarFotos(){
-
+        const fotos=[];
         const photosContainer = document.getElementById('photos');
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -18,9 +18,10 @@
           for (let i = 0; i < 3; i++) {
             await new Promise(resolve => setTimeout(resolve, 1500));
             const photo = await capturePhoto();
+            fotos.push(photo);
             displayPhoto(photo);
           }
-  
+          addTraining(fotos);
     
         function capturePhoto() {
             return new Promise((resolve) => {
@@ -37,9 +38,8 @@
             img.src = URL.createObjectURL(blob);
             img.width = 200; // Ajusta el tamaño de la imagen si es necesario
             img.height = 100; // Ajusta el tamaño de la imagen si es necesario
-            if(photosContainer){
-                photosContainer.appendChild(img);
-            }
+            photosContainer.appendChild(img);
+
         }
     }
 

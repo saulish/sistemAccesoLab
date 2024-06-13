@@ -1,3 +1,0 @@
-async function addTraining(fotos){
-
-}

@@ -26,9 +26,9 @@ function enviarDatos() {
     let codigo = document.getElementById('codigo').value;
     let huella = document.getElementById('huella').value;
     let tarjeta = document.getElementById('tarjeta').value;
-    let facial = document.getElementById('facial').value;
-    console.log(codigo);
-
+    let elementoF = document.getElementById('facialV');
+    
+    const facial=elementoF.getAttribute('value');
     $.ajax({
       url:'funciones/setDatosBio.php',
       type: 'POST',
@@ -37,8 +37,7 @@ function enviarDatos() {
       'codigo=' + codigo + '&huella=' + huella + '&tarjeta=' + tarjeta + '&facial=' + facial,
       
       success: function(res) {
-        const estado=document.getElementById('status');
-
+        const estado=document.getElementById('modelStatus');
         estado.innerText = res;
         setTimeout(() => {
             estado.innerText = '';
@@ -57,7 +56,8 @@ function hacerCheck() {
     let codigo = document.getElementById('codigo').value;
     let huella = document.getElementById('huella').value;
     let tarjeta = document.getElementById('tarjeta').value;
-    let facial = document.getElementById('facial').value;
+    //let facial = document.getElementById('facial').value;
+    const facial=null
 
     $.ajax({
         url: 'funciones/check.php',

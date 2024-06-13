@@ -2,6 +2,7 @@
 const res=document.getElementById('result');
 let modeloCargado=false;
 
+
 async function loadModelFromGoogleDrive(scriptURL) {
     const estadoModelo=document.getElementById('modelStatus');
 
@@ -21,7 +22,6 @@ async function loadModelFromGoogleDrive(scriptURL) {
         for (let i = 0; i < binaryString.length; i++) {
             bytes[i] = binaryString.charCodeAt(i);
         }
-
         // Parsear el contenido decodificado como JSON
         const jsonString = new TextDecoder().decode(bytes);
         const artifactsData = JSON.parse(jsonString);
@@ -39,6 +39,8 @@ async function loadModelFromGoogleDrive(scriptURL) {
             modelArtifacts.weightSpecs,
             modelArtifacts.weightData
         ));
+        estadoModelo.innerText='Cargando modelo ***';
+
         model=modelitito;
         estadoModelo.innerText='Modelo cargado correctamente';
         await setupCamera();
@@ -49,7 +51,7 @@ async function loadModelFromGoogleDrive(scriptURL) {
 
         // Obtener la cantidad de unidades en la capa de salida (número de clases)
         const numLabels = outputLayer.units;
-    
+        model.summary()
         console.log(`El modelo ha sido entrenado para reconocer ${numLabels} etiquetas.`);
         return numLabels;
 
