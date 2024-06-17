@@ -7,7 +7,6 @@ async function addTraining(fotos){
     const valueLabel=document.getElementById('facialV');
 
 
-    //Congelar las capas previas para evitar problemas
 
     
     for (let i = 0; i < model.layers.length - 1; i++) {
@@ -26,7 +25,6 @@ async function addTraining(fotos){
 
     const {X_train, y_train}= await combineDatasets(X_new,y_new,X_old,y_old);
 
-    //const {X_train, y_train}= await pruebaMezclar(x_data,y_data);
 
 
     
@@ -98,7 +96,7 @@ async function reEntrenar(X_train,y_train,numLabels){
     
     // Compilar el nuevo modelo
     newModel.compile({
-        optimizer: tf.train.adam(0.0001),
+        optimizer: tf.train.adam(0.00001),
         loss: 'categoricalCrossentropy',
         metrics: ['accuracy']
     });
@@ -116,30 +114,43 @@ async function reEntrenar(X_train,y_train,numLabels){
 
 
     const status=document.getElementById('modelStatus');
-    await model.fit(X_train, oneHotLabels, {
-        //shuffle: true,
-        epochs: 50,  // Ajusta el número de épocas según sea necesario
-        batchSize: 5,  // Ajusta el tamaño del batch según sea necesario
-        validationSplit: 0.4,  // Ajusta el split de validación según sea necesario
-        callbacks: {
-            onEpochEnd: (epoch, logs) => {
-                console.log(`Epoch ${epoch + 1}: loss = ${logs.loss}, accuracy = ${logs.acc}, val_loss = ${logs.val_loss}, val_accuracy = ${logs.val_acc}`);
-                status.innerText = `Epoch ${epoch + 1}: loss = ${logs.loss.toFixed(4)}, accuracy = ${logs.acc.toFixed(4)}, val_loss = ${logs.val_loss.toFixed(4)}, val_accuracy = ${logs.val_acc.toFixed(4)}`;
-            },
-            onTrainEnd: () => {
-                console.log('Entrenamiento terminado');
-            },
-            onTrainBegin: () => {
-                console.log('Entrenamiento iniciado');
-            },
-            onEpochBegin: (epoch, logs) => {
-                console.log(`Inicio de la época ${epoch + 1}`);
-            },
-            onBatchEnd: (batch, logs) => {
-                console.log(`Batch ${batch + 1}: loss = ${logs.loss.toFixed(4)}, accuracy = ${logs.acc.toFixed(4)}`);
+    const k = 2;
+    const numSamples = X_train.shape[0];
+    const foldSize = Math.floor(numSamples / k);
+    
+    for (let i = 0; i < k; i++) {
+        const valStart = i * foldSize;
+        const valEnd = valStart + foldSize;
+        const X_val = X_train.slice([valStart, 0], [foldSize, -1]);
+        const y_val = oneHotLabels.slice([valStart], [foldSize]);
+    
+        const X_trainFold = tf.concat([X_train.slice([0, 0], [valStart, -1]), X_train.slice([valEnd, 0], [numSamples - valEnd, -1])]);
+        const y_trainFold = tf.concat([oneHotLabels.slice([0], [valStart]), oneHotLabels.slice([valEnd], [numSamples - valEnd])]);
+    
+        await model.fit(X_trainFold, y_trainFold, {
+            epochs: 50,  // Ajusta el número de épocas según sea necesario
+            batchSize: 8,  // Ajusta el tamaño del batch según sea necesario
+            validationData: [X_val, y_val],  // Usar validationData en lugar de validationSplit
+            callbacks: {
+                onEpochEnd: (epoch, logs) => {
+                    console.log(`Fold ${i + 1}, Epoch ${epoch + 1}: loss = ${logs.loss}, accuracy = ${logs.acc}, val_loss = ${logs.val_loss}, val_accuracy = ${logs.val_acc}`);
+                    status.innerText = `Fold ${i + 1}, Epoch ${epoch + 1}: loss = ${logs.loss.toFixed(4)}, accuracy = ${logs.acc.toFixed(4)}, val_loss = ${logs.val_loss.toFixed(4)}, val_accuracy = ${logs.val_acc.toFixed(4)}`;
+                },
+                onTrainEnd: () => {
+                    console.log('Entrenamiento terminado');
+                },
+                onTrainBegin: () => {
+                    console.log('Entrenamiento iniciado');
+                },
+                onEpochBegin: (epoch, logs) => {
+                    console.log(`Inicio de la época ${epoch + 1}`);
+                },
+                onBatchEnd: (batch, logs) => {
+                    console.log(`Batch ${batch + 1}: loss = ${logs.loss.toFixed(4)}, accuracy = ${logs.acc.toFixed(4)}`);
+                }
             }
-        }
-    });
+        });
+    }
     console.log("Estructura del modelo después de modificar:");
     model.summary();
     
@@ -228,7 +239,45 @@ async function saveTensorsToDrive(X_train, y_train) {
 }
 
 
-
+function rotateImage(image) {
+    const angle = Math.random() * Math.PI * 2; // Rotación aleatoria entre 0 y 360 grados
+    return tf.tidy(() => {
+      const batched = image.expandDims(0); // Añadir dimensión del batch
+      const rotated = tf.image.rotateWithOffset(batched, angle, 0.0);
+      return rotated.squeeze(0); // Eliminar dimensión del batch
+    });
+  }
+  
+  function flipImage(image) {
+    return tf.tidy(() => {
+      const batched = image.expandDims(0); // Añadir dimensión del batch
+      const flipLeftRight = Math.random() > 0.5 ? tf.image.flipLeftRight(batched) : batched;
+      const flipUpDown = Math.random() > 0.5 ? tf.image.flipUpDown(batched) : batched;
+      return [flipLeftRight.squeeze(0), flipUpDown.squeeze(0)]; // Eliminar dimensión del batch
+    });
+  }
+  
+  function adjustBrightness(image, delta) {
+    return tf.tidy(() => image.add(tf.scalar(delta)));
+  }
+  
+  function adjustContrast(image, contrastFactor) {
+    return tf.tidy(() => {
+      const mean = image.mean();
+      return image.sub(mean).mul(contrastFactor).add(mean);
+    });
+  }
+  
+  function augmentImage(image) {
+    //const rotated = rotateImage(image);
+    //const [flipLeftRight, flipUpDown] = flipImage(image);
+    const brightened = adjustBrightness(image, Math.random() * 0.2 - 0.1); // Ajuste de brillo aleatorio entre -0.1 y 0.1
+    const contrasted = adjustContrast(image, Math.random() * 0.5 + 0.75); // Ajuste de contraste aleatorio entre 0.75 y 1.25
+  
+  
+  
+    return [brightened, contrasted];
+  }
 async function loadCarpetaFotos(files, capturedPhotos, newLabel) {
     const imageSize = 32;
     const labels = [];
@@ -247,6 +296,11 @@ async function loadCarpetaFotos(files, capturedPhotos, newLabel) {
     for (const photo of capturedPhotos) {
         const image = await loadImageFromBlob(photo);
         const resizedImage = tf.image.resizeBilinear(image, [imageSize, imageSize]);
+        const augmentedImages = augmentImage(resizedImage);
+        augmentedImages.forEach(augImg => {
+            images.push(augImg);
+            labels.push(parseInt(newLabel));
+        });
         labels.push(newLabel); // Etiqueta para las nuevas fotos
         images.push(resizedImage);
     }
