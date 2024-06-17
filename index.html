@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro</title>
-    <script src="funciones/jquery-3.7.1.min.js"></script>
-    <script src="funciones/funciones1.js"></script>
+
     <style>
         /* Resetting default margin and padding */
         * {
@@ -90,9 +89,11 @@
 
 <body>
     <h1>Registro de usuarios</h1>
+    <div id="modelStatus"></div><br>
+
+    <form id="data-form">
     <br>
-    <form>
-        <label for="codigo">Codigo:</label>
+    <form>        <label for="codigo">Codigo:</label>
         <input type="text" id="codigo" name="codigo" required>
 
         <label for="huella">Huella:</label>
@@ -100,7 +101,15 @@
 
         <label for="tarjeta">Tarjeta:</label>
         <input type="text" id="tarjeta" name="tarjeta" required>
+   
+        <label id="facialV" for="facial" value=0>Facial:</label>
+        
 
+        <button type="button" id="tomar-fotos" onclick="tomarFotos()">Capturar Fotos</button>
+    
+        <video id="video" width="200" height="100" autoplay></video>
+        <canvas id="canvas" width="200" height="100" style="display:none;"></canvas>
+    
         <label for="facial">Facial:</label>
         <input type="text" id="facial" name="facial" required>
         <label for="horario">Horario:</label>
@@ -111,10 +120,23 @@
             <option value="4">Sabatino</option>
         </select>
 
+
         <button type="button" onclick="enviarDatos()">Enviar</button>
     </form>
+    <div id="photos"></div>
+
     <a href="check.html">Verificar</a>
+
+    <script src="funciones/jquery-3.7.1.min.js"></script>
+    <script src="funciones/funciones9.js"></script>
+    <script src="funciones/funcionesCam2.js"></script>
+    <script src="funciones/addLabel8.js"></script>
+    <script src="funciones/getModelo12.js"></script>
+    <script src="funciones/guardarModelo13.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+
     <script src="funciones/funciones1.js"></script>
+
 </body>
 
 </html>

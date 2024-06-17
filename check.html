@@ -3,8 +3,11 @@
 
 <head>
     <title>Check</title>
+
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="funciones/funciones1.js"></script>
+
     <style>
         /* Resetting default margin and padding */
         * {
@@ -105,11 +108,16 @@
 <body>
     <h1>Hacer check</h1>
 
-    <button id="connectButton">Conectar al puerto serial</button>
-    <label for="videoSource">Select Camera: </label>
-    <select id="videoSource"></select>
+    <button id="connectButton">Conectar al puerto serial</button><br>
+    
+
+    <div id="modelStatus"></div><br>
+
     <video id="video" width="640" height="480" autoplay muted></video>
     <canvas id="canvas" width="640" height="480" style="display:none;"></canvas>
+
+
+
     <form id="serialForm">
         <label for="codigo">Codigo:</label>
         <input type="text" id="codigo" name="codigo"><br>
@@ -118,6 +126,10 @@
         <input type="text" id="huella" name="huella"><br>
 
         <label for="tarjeta">Tarjeta:</label>
+        <input type="text" id="tarjeta" name="tarjeta" ><br>
+        
+        <button type="button" onclick="hacerCheck()">Enviar</button>
+        <button type="button"  id="capture-button">Start Detection</button>
         <input type="text" id="tarjeta" name="tarjeta"><br>
 
         <label for="facial">Facial:</label>
@@ -129,7 +141,14 @@
         <br>
         <div id="status"></div>
         <br>
-
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+        <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+        
+        <script src="funciones/funciones9.js"></script>
+        <script src="funciones/funcionesCam2.js"></script>
+        <script src="funciones/predecir2.js"></script>
+        <script src="funciones/getModelo12.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 let procesarDatosC = false;
