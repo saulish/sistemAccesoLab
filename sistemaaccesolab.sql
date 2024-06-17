@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 16-05-2024 a las 18:12:47
+-- Tiempo de generación: 12-06-2024 a las 18:58:15
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
@@ -29,18 +29,24 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `datos_biometricos` (
   `id` int(11) NOT NULL,
-  `codigo` int(10) NOT NULL,
-  `Dhuella` varchar(100) NOT NULL,
-  `Dfacial` varchar(100) NOT NULL,
-  `DTarjeta` varchar(100) NOT NULL
+  `codigo` int(11) NOT NULL,
+  `Dhuella` varchar(255) NOT NULL,
+  `Dtarjeta` varchar(255) NOT NULL,
+  `Dfacial` varchar(255) NOT NULL,
+  `turno` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `datos_biometricos`
 --
 
-INSERT INTO `datos_biometricos` (`id`, `codigo`, `Dhuella`, `Dfacial`, `DTarjeta`) VALUES
-(1, 218879131, 'huella1', 'facil1', 'tarjeta1');
+INSERT INTO `datos_biometricos` (`id`, `codigo`, `Dhuella`, `Dtarjeta`, `Dfacial`, `turno`) VALUES
+(1, 218715581, 'huella_juan', 'tarjeta_juan', 'facial_juan', 1),
+(2, 218715582, 'huella_maria', 'tarjeta_maria', 'facial_maria', 2),
+(3, 218715583, 'huella_carlos', 'tarjeta_carlos', 'facial_carlos', 3),
+(4, 218715584, 'huella_ana', 'tarjeta_ana', 'facial_ana', 4),
+(5, 218715585, 'huella_luis', 'tarjeta_luis', 'facial_luis', 5),
+(8, 1, 'pabloH', 'pabloT', 'pabloC', 2);
 
 -- --------------------------------------------------------
 
@@ -61,31 +67,16 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `codigo`, `telefono`, `nombre`, `activo`) VALUES
-(1, 218879131, 2147483647, 'Saul', 1);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `turno_personalizado`
---
-
-CREATE TABLE `turno_personalizado` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
-  `day_of_week` varchar(10) NOT NULL,
-  `shift` varchar(20) NOT NULL,
-  PRIMARY KEY (`id`),
-  FOREIGN KEY (`user_id`) REFERENCES `usuarios`(`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+(1, 218879131, 2147483647, 'Saul', 1),
+(5, 218715589, 333842711, 'Oscar Martinez', 1),
+(11, 218715581, 555, 'Juan Pérez', 1),
+(12, 218715582, 555, 'María López', 1),
+(13, 218715583, 555, 'Carlos García', 0),
+(14, 218715584, 555, 'Ana Fernández', 1),
+(15, 218715585, 555, 'Luis Martínez', 0),
+(17, 1, 1, 'aaaaa', 1);
 
 --
-INSERT INTO `turno_personalizado` (`user_id`, `day_of_week`, `shift`) VALUES
-(5, 'Monday', 'matutino'),
-(5, 'Tuesday', 'matutino'),
-(5, 'Wednesday', 'matutino'),
-(5, 'Thursday', 'vespertino'),
-(5, 'Friday', 'vespertino');
-
 -- Índices para tablas volcadas
 --
 
@@ -109,20 +100,13 @@ ALTER TABLE `usuarios`
 -- AUTO_INCREMENT de la tabla `datos_biometricos`
 --
 ALTER TABLE `datos_biometricos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT de la tabla `turno_personalizado`
---
-ALTER TABLE `turno_personalizado`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
-
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
