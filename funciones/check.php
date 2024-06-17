@@ -8,9 +8,8 @@ $huella = $_REQUEST['huella'];
 $tarjeta = $_REQUEST['tarjeta'];
 $facial = $_REQUEST['facial'];
 
-$sql = "SELECT codigo FROM datos_biometricos WHERE codigo='$codigoo' OR Dhuella='$huella' OR Dfacial='$facial' OR Dtarjeta='$tarjeta'";
+$sql = "SELECT codigo, turno FROM datos_biometricos WHERE codigo='$codigoo' OR Dhuella='$huella' OR Dfacial='$facial' OR Dtarjeta='$tarjeta'";
 $resDatos = $conexion->query($sql);
-
 if ($resDatos->num_rows > 0) {
     $row = $resDatos->fetch_assoc();
     $codigo = $row['codigo'];
@@ -28,30 +27,6 @@ if ($resDatos->num_rows > 0) {
         $nombre = $row['nombre'];
         $activo = $row['activo'];
 
-        function isWithinShift($shift) {
-            // Get the current time and day
-            $currentDateTime = new DateTime('now', new DateTimeZone('America/Mexico_City')); // Adjust timezone as needed
-            $currentTime = $currentDateTime->format('H:i');
-            $currentDay = $currentDateTime->format('N'); // 1 (for Monday) through 7 (for Sunday)
-            error_log("Current Time: $currentTime"); // Log current time for debugging
-            error_log("Current Day: $currentDay"); // Log current day for debugging
-
-            switch ($shift) {
-                case 1: // Matutino (Monday to Friday, 7am to 12pm)
-                    return $currentDay >= 1 && $currentDay <= 5 && $currentTime >= '07:00' && $currentTime <= '12:00';
-                case 2: // Vespertino (Monday to Friday, 4pm to 8pm)
-                    return $currentDay >= 1 && $currentDay <= 5 && $currentTime >= '16:00' && $currentTime <= '20:00';
-                case 3: // Nocturno (Monday to Friday, 8pm to 6am)
-                    return ($currentDay >= 1 && $currentDay <= 5 && $currentTime >= '20:00') || 
-                           ($currentDay >= 2 && $currentDay <= 6 && $currentTime <= '06:00');
-                case 4: // Sabatino (Saturday, 7am to 4pm)
-                    return $currentDay == 6 && $currentTime >= '07:00' && $currentTime <= '16:00';
-                case 5: // Turno 5 (puede acceder a cualquier hora)
-                    return true;
-                default:
-                    return false;
-            }
-        }
 
         if ($activo == 0) {
             $sqlCambio = "UPDATE usuarios SET activo=1 WHERE codigo=$codigo";
