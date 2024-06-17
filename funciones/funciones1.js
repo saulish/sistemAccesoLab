@@ -125,7 +125,7 @@ function hacerCheck() {
                     alert("Error de datos.");
                     break;
                 case "4":
-                    alert("Adiós, " + nombre);
+                    alert("Adiós bay, " + nombre);
                     break;
                 default:
                     alert("Respuesta desconocida: " + resultado);
