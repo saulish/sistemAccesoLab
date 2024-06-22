@@ -1,5 +1,6 @@
 //FUNCIONES PARA HACER EL CHECK
 let port;
+import { fetchCheck } from '/funciones/funcionesSupa.js';
 
 function actualizarDatos() {
   let codigo = document.getElementById('codigo').value;
@@ -30,33 +31,6 @@ function actualizarDatos() {
 }
 
 
-
-function actualizarDatos() {
-    let codigo = document.getElementById('codigo').value;
-    let huella = document.getElementById('huella').value;
-    let tarjeta = document.getElementById('tarjeta').value;
-    let facial = document.getElementById('facial').value;
-    let horario = document.getElementById('horario').value; // Get the selected horario value
-
-    $.ajax({
-        url: 'funciones/updateDatos.php',
-        type: 'POST',
-        dataType: 'text',
-        data: {
-            codigo: codigo,
-            huella: huella,
-            tarjeta: tarjeta,
-            facial: facial,
-            horario: horario
-        },
-        success: function(res) {
-            alert(res);
-        },
-        error: function() {
-            alert('Error: archivo no encontrado');
-        }
-    });
-}
 
 
 function enviarDatos() {
@@ -93,11 +67,24 @@ function enviarDatos() {
     });
 }
 
-function hacerCheck() {
-  let codigo = document.getElementById('codigo').value;
-  let huella = document.getElementById('huella').value;
-  let tarjeta = document.getElementById('tarjeta').value;
-  let facial = -1;
+export async function hacerCheck() {
+  const codigo = document.getElementById('codigo').value;
+  const huella = document.getElementById('huella').value;
+  const tarjeta = document.getElementById('tarjeta').value;
+  const facial = document.getElementById('capture-button').getAttribute('value');
+  const estado=document.getElementById('status');
+  if(codigo=="" && huella=="" && tarjeta=="" && facial==-1){
+    estado.innerText='Seleccione un metodo de autenticacion';
+
+    setTimeout(function(){
+        estado.innerText='';
+
+    }, 3000);
+    return;
+  }
+  await fetchCheck(codigo, huella, tarjeta, facial);
+
+    /*
     $.ajax({
         url: 'funciones/check.php',
         type: 'POST',
@@ -136,16 +123,19 @@ function hacerCheck() {
             console.error("AJAX Error: " + status + ": " + error); // Log para verificar errores
             alert('Error: no se pudo conectar con el servidor');
         }
-    });
+    });*/
 }
 
 
-function hacerCheckRecibir(codigo, huella, tarjeta, facial) {
+export async function hacerCheckRecibir(codigo, huella, tarjeta, facial) {
     if (codigo == "" && huella == "" && tarjeta == "" && facial == "") {
         alert("Debe seleccionar al menos un metodo de autenticacion");
         return;
     }
+    if(facial==null)facial=-1;
 
+
+    /*
     $.ajax({
         url: 'funciones/check.php',
         type: 'POST',
@@ -180,7 +170,7 @@ function hacerCheckRecibir(codigo, huella, tarjeta, facial) {
         error: function() {
             alert('Error: archivo no encontrado');
         }
-      });
+      });*/
   
 }
     
@@ -196,3 +186,6 @@ function enviarComandoAlArduino(resultado) {
         alert('No hay conexión al puerto serial.');
     }
 }
+
+
+document.getElementById('hacerCheck').addEventListener('click', hacerCheck);

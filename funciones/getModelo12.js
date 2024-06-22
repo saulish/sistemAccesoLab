@@ -1,6 +1,8 @@
 //BAJAR EL Y CARGAR EL MODELO DESDE DRIVE
+import { setNewModel } from "/funciones/predecir2.js";
 const res=document.getElementById('result');
 let modeloCargado=false;
+let model;
 
 
 async function loadModelFromGoogleDrive(scriptURL) {
@@ -42,6 +44,7 @@ async function loadModelFromGoogleDrive(scriptURL) {
         estadoModelo.innerText='Cargando modelo ***';
 
         model=modelitito;
+        setNewModel(model);
         estadoModelo.innerText='Modelo cargado correctamente';
         await setupCamera();
         modeloCargado=true;

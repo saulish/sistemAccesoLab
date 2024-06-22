@@ -1,6 +1,9 @@
+import {hacerCheckRecibir, hacerCheck} from '/funciones/funciones1.js';
 let model;
-function setNewModel(newModel){
+let modeloCargado=false;
+export function setNewModel(newModel){
   model=newModel;
+  modeloCargado=true;
 }
 
 
@@ -85,7 +88,9 @@ async function setupCamera() {
         //result.innerText = `Predicted class: ${predictedClass}`;
         clearImageFields();
         console.log(predictedClass);
-        hacerCheckRecibir(null,null,null,predictedClass);
+        document.getElementById('capture-button').setAttribute('value', predictedClass);
+        document.getElementById('status').innerText = `Clase: ${predictedClass}`;
+        //hacerCheckRecibir(null,null,null,predictedClass);
         }catch(error){
             console.log(error)
         }
