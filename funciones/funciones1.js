@@ -1,6 +1,6 @@
 //FUNCIONES PARA HACER EL CHECK
 let port;
-import { fetchCheck } from '/funciones/funcionesSupa.js';
+import { fetchCheck } from '/sistemAccesoLab/funciones/funcionesSupa.js';
 
 function actualizarDatos() {
   let codigo = document.getElementById('codigo').value;
