@@ -1,4 +1,4 @@
-import {hacerCheckRecibir, hacerCheck} from '/funciones/funciones1.js';
+import {hacerCheckRecibir, hacerCheck} from '/sistemAccesoLab/funciones/funciones1.js';
 let model;
 let modeloCargado=false;
 export function setNewModel(newModel){
