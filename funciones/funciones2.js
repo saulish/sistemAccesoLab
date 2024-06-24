@@ -98,6 +98,7 @@ function hacerCheck() {
   let huella = document.getElementById('huella').value;
   let tarjeta = document.getElementById('tarjeta').value;
   let facial = -1;
+  
     $.ajax({
         url: 'funciones/check.php',
         type: 'POST',
@@ -125,7 +126,7 @@ function hacerCheck() {
                     alert("Error de datos.");
                     break;
                 case "4":
-                    alert("Adiós bay, " + nombre);
+                    alert("Adi\xf3s, " + nombre);
                     break;
                 default:
                     alert("Respuesta desconocida: " + resultado);
