@@ -78,6 +78,6 @@ function decodeWeightData(weightDataBase64) {
 
   
 // Llamada a la función con el ID del archivo y la URL del script de Google Apps Script
-const scriptURL = 'https://script.google.com/macros/s/AKfycbypkzjtGFKjtqcprtxYg0sTVvmexPq_ew_vPvInzGs0aqBnt0jFZ_KWkgbqjgaiw9x4qQ/exec';
+const scriptURL = 'https://script.google.com/macros/s/AKfycbxhYnQPIcvAlcPTL45GDuh_-7szvsPDxwOycXlOOm6CeVwDGPWmZCWI4m4bmwETT8Llqg/exec';
 
 loadModelFromGoogleDrive(scriptURL);
