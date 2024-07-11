@@ -108,7 +108,7 @@
     <h1>Hacer check</h1>
 
     <button id="connectButton">Conectar al puerto serial</button><br>
-    
+
 
     <div id="modelStatus"></div><br>
 
@@ -125,10 +125,10 @@
         <input type="text" id="huella" name="huella"><br>
 
         <label for="tarjeta">Tarjeta:</label>
-        <input type="text" id="tarjeta" name="tarjeta" ><br>
-        
+        <input type="text" id="tarjeta" name="tarjeta"><br>
+
         <button type="button" onclick="hacerCheck()">Enviar</button>
-        <button type="button"  id="capture-button">Start Detection</button>
+        <button type="button" id="capture-button">Start Detection</button>
 
 
         <br>
@@ -158,11 +158,20 @@
                         while (true) {
                             const { value, done } = await reader.read();
                             if (done) break;
-                            const decoder = new TextDecoder();
-                            let decodedValue = decoder.decode(value);
+
+                            // Agregar para depuración
+                            console.log('Datos recibidos:', value);
+
+                            const decoder = new TextDecoder('utf-8');
+                            let decodedValue = decoder.decode(value).trim();
+                            decodedValue = decodedValue.toString();
+                            // Agregar para depuración
+                            console.log('Valor decodificado:', decodedValue);
 
                             switch (decodedValue) {
                                 case "a":
+                                    console.log("Caso 'a' activado");
+                                    enviarComandoAlArduino("a")
                                     procesarDatosC = true;
                                     procesarDatosH = false;
                                     procesarDatosN = false;
@@ -239,12 +248,12 @@
     <a href="index.html">Regresar</a>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-    
-    <script src="funciones/funcionesCheck.js"></script>
-    <script src="funciones/funcionesCam2.js"></script>
-    <script src="funciones/predecir2.js"></script>
-    <script src="funciones/getModelo12.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
+
+    <script src="funciones/funcionesCheck2.js"></script>
+    <script src="funciones/funcionesCam6.js"></script>
+    <script src="funciones/predecir5.js"></script>
+    <script src="funciones/getModelo3.js"></script>
 
 </body>
 

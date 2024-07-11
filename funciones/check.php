@@ -15,7 +15,6 @@ if ($resDatos->num_rows > 0) {
     $codigo = $row['codigo'];
 
     $shift = $row['turno']; // Obtener el turno desde la tabla datos_biometricos
-    error_log("Código: $codigo, Turno: $shift"); // Log para verificar que los datos se obtuvieron correctamente
 
 
     $sqlNombre = "SELECT id, nombre, activo FROM usuarios WHERE codigo=$codigo";
@@ -52,13 +51,11 @@ if ($resDatos->num_rows > 0) {
     echo "1,"; // Datos incorrectos
 }
 
-function isWithinShift($shift) {
+function isWithinShift($shift)
+{
     $currentDateTime = new DateTime('now', new DateTimeZone('America/Mexico_City')); // Adjust timezone as needed
     $currentTime = $currentDateTime->format('H:i');
     $currentDay = $currentDateTime->format('N'); // 1 (for Monday) through 7 (for Sunday)
-    error_log("Current Time: $currentTime"); // Log current time for debugging
-    error_log("Current Day: $currentDay"); // Log current day for debugging
-    error_log("Shift: $shift"); // Log shift for debugging
 
     $withinShift = false; // Default value
 
@@ -86,4 +83,3 @@ function isWithinShift($shift) {
     error_log("Within Shift: " . ($withinShift ? "true" : "false")); // Log result for debugging
     return $withinShift;
 }
-?>
