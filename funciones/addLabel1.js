@@ -240,7 +240,27 @@ async function saveTensorsToDrive(X_train, y_train) {
     console.log(result);
 }
 
-
+function adjustBrightness(image, delta) {
+    return tf.tidy(() => image.add(tf.scalar(delta)));
+  }
+  
+  function adjustContrast(image, contrastFactor) {
+    return tf.tidy(() => {
+      const mean = image.mean();
+      return image.sub(mean).mul(contrastFactor).add(mean);
+    });
+  }
+  
+  function augmentImage(image) {
+    //const rotated = rotateImage(image);
+    //const [flipLeftRight, flipUpDown] = flipImage(image);
+    const brightened = adjustBrightness(image, Math.random() * 0.2 - 0.1); // Ajuste de brillo aleatorio entre -0.1 y 0.1
+    const contrasted = adjustContrast(image, Math.random() * 0.5 + 0.75); // Ajuste de contraste aleatorio entre 0.75 y 1.25
+  
+  
+  
+    return [brightened, contrasted];
+  }
 
 async function loadCarpetaFotos(files, capturedPhotos, newLabel) {
     const imageSize = 32;
@@ -252,6 +272,11 @@ async function loadCarpetaFotos(files, capturedPhotos, newLabel) {
         const label = file.webkitRelativePath.split('/')[1]; // Obtener el nombre de la subcarpeta
         const image = await loadImage(file);
         const resizedImage = tf.image.resizeBilinear(image, [imageSize, imageSize]);
+        const augmentedImages = augmentImage(resizedImage);
+        augmentedImages.forEach(augImg => {
+            images.push(augImg);
+            labels.push(parseInt(newLabel));
+        });
         labels.push(parseInt(label));
         images.push(resizedImage);
     }
@@ -260,7 +285,12 @@ async function loadCarpetaFotos(files, capturedPhotos, newLabel) {
     for (const photo of capturedPhotos) {
         const image = await loadImageFromBlob(photo);
         const resizedImage = tf.image.resizeBilinear(image, [imageSize, imageSize]);
-        labels.push(newLabel); // Etiqueta para las nuevas fotos
+        const augmentedImages = augmentImage(resizedImage);
+        augmentedImages.forEach(augImg => {
+            images.push(augImg);
+            labels.push(parseInt(newLabel));
+        });
+        labels.push(parseInt(newLabel));
         images.push(resizedImage);
     }
     console.log("2: "+labels)
