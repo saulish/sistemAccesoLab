@@ -2,13 +2,13 @@
 
 
 async function saveModelAndUpload() {
-    await model.save('indexeddb://modeloPendejo');
+    await model.save('indexeddb://modeloPrincipal');
     saveModelToGoogleDrive();
 
 }
 
 
-async function saveModelToGoogleDrive(modelName='modeloPendejo', scriptURL='https://script.google.com/macros/s/AKfycbw9S9lIe0S-J2lgWqhucGqBIm5kjXpTPQdl6iAJeMkgkCOt9gTmRvYgPIv7bCFMAVD9Hg/exec') {
+async function saveModelToGoogleDrive(modelName='modeloPrincipal', scriptURL='https://script.google.com/macros/s/AKfycbw9S9lIe0S-J2lgWqhucGqBIm5kjXpTPQdl6iAJeMkgkCOt9gTmRvYgPIv7bCFMAVD9Hg/exec') {
   try {
       const modelJson = await model.save(tf.io.withSaveHandler(async (artifacts) => {
         return artifacts;

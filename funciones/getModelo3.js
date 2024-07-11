@@ -1,6 +1,7 @@
 //BAJAR EL Y CARGAR EL MODELO DESDE DRIVE
 const res=document.getElementById('result');
 let modeloCargado=false;
+let modelDetectFace;
 
 
 async function loadModelFromGoogleDrive(scriptURL) {
@@ -43,8 +44,15 @@ async function loadModelFromGoogleDrive(scriptURL) {
 
         model=modelitito;
         estadoModelo.innerText='Modelo cargado correctamente';
+        modelDetectFace=await loadDetecFaceModel();
+
         await setupCamera();
+        //setInterval(() => detectFace(), 1000);
+
         modeloCargado=true;
+        const prueba=document.getElementById("horario");
+        console.log(prueba)
+        if(prueba==null) setInterval(() => detectFace(), 1000);
 
         
         const outputLayer = model.layers[model.layers.length - 1];
@@ -75,8 +83,10 @@ function decodeWeightData(weightDataBase64) {
 }
 
 
+async function bajarModelos(){
+    modelDetectFace=await loadDetecFaceModel();
+}
 
-  
 // Llamada a la función con el ID del archivo y la URL del script de Google Apps Script
 const scriptURL = 'https://script.google.com/macros/s/AKfycbxhYnQPIcvAlcPTL45GDuh_-7szvsPDxwOycXlOOm6CeVwDGPWmZCWI4m4bmwETT8Llqg/exec';
 

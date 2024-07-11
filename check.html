@@ -160,9 +160,12 @@
                             if (done) break;
                             const decoder = new TextDecoder();
                             let decodedValue = decoder.decode(value);
+                            //alert(decodedValue)
 
                             switch (decodedValue) {
                                 case "a":
+
+                                    enviarComandoAlArduino("a")
                                     procesarDatosC = true;
                                     procesarDatosH = false;
                                     procesarDatosN = false;
@@ -239,12 +242,12 @@
     <a href="index.html">Regresar</a>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-    <script src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/blazeface"></script>
     
-    <script src="funciones/funcionesCheck.js"></script>
-    <script src="funciones/funcionesCam2.js"></script>
-    <script src="funciones/predecir2.js"></script>
-    <script src="funciones/getModelo12.js"></script>
+    <script src="funciones/funcionesCheck2.js"></script>
+    <script src="funciones/funcionesCam6.js"></script>
+    <script src="funciones/predecir5.js"></script>
+    <script src="funciones/getModelo3.js"></script>
 
 </body>
 

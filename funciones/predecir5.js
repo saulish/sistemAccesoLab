@@ -84,8 +84,10 @@ async function setupCamera() {
         //document.getElementById('prediction-result').innerText = `Predicted class: ${predictedClass}`;
         //result.innerText = `Predicted class: ${predictedClass}`;
         clearImageFields();
+        
         console.log(predictedClass);
-        hacerCheckRecibir(null,null,null,predictedClass);
+        //hacerCheckRecibir(null,null,null,predictedClass);
+        hacerCheck(predictedClass);
         }catch(error){
             console.log(error)
         }

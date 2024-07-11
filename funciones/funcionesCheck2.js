@@ -30,7 +30,34 @@ function actualizarDatos() {
 }
 
 
-
+function verificarCodigo(){
+    const codigo=document.getElementById('codigo').value;
+    const elemento=document.getElementById('msjCodigo');
+    $.ajax({
+        url:"funciones/checkCodigo.php",
+        type:"POST",
+        dataType:"text",
+        data:{
+            codigo:codigo
+        },
+        success:function(res){
+            if(res=='1'){
+                elemento.innerText="Codigo valido";
+                setTimeout(function() {
+                    elemento.innnertext = '';
+                  }, 2000);
+            }else{
+                elemento.innerText="Codigo invalido";
+                setTimeout(function() {
+                    elemento.innnertext = '';
+                  }, 2000);
+            }
+        },
+        error:function(){
+            alert('Error: archivo no encontrado');
+        }
+    });
+}
 function actualizarDatos() {
     let codigo = document.getElementById('codigo').value;
     let huella = document.getElementById('huella').value;
@@ -93,11 +120,14 @@ function enviarDatos() {
     });
 }
 
-function hacerCheck() {
+function hacerCheck(label) {
   let codigo = document.getElementById('codigo').value;
   let huella = document.getElementById('huella').value;
   let tarjeta = document.getElementById('tarjeta').value;
-  let facial = -1;
+  let facial=-1;
+  if(label!=undefined) facial=label; 
+  console.log("El label "+facial)
+
   
     $.ajax({
         url: 'funciones/check.php',
@@ -126,7 +156,7 @@ function hacerCheck() {
                     alert("Error de datos.");
                     break;
                 case "4":
-                    alert("Adi\xf3s, " + nombre);
+                    alert("Adios, " + nombre);
                     break;
                 default:
                     alert("Respuesta desconocida: " + resultado);
@@ -139,54 +169,6 @@ function hacerCheck() {
         }
     });
 }
-
-
-function hacerCheckRecibir(codigo, huella, tarjeta, facial) {
-    if (codigo == "" && huella == "" && tarjeta == "" && facial == "") {
-        alert("Debe seleccionar al menos un metodo de autenticacion");
-        return;
-    }
-
-    $.ajax({
-        url: 'funciones/check.php',
-        type: 'POST',
-        dataType: 'text',
-        data: {
-            codigo: codigo,
-            huella: huella,
-            tarjeta: tarjeta,
-            facial: facial
-            },
-        success: function(res) {
-          const partes = res.split(",");
-
-          // Asignar las partes a las variables
-          const codigoRes = partes[0].trim();
-          const nombre = partes[1].trim();
-          switch (codigoRes) {
-            case '0':
-              alert('Bienvenido '+nombre);
-              break;
-            case '1':
-              alert('Datos incorrectos ');
-              break;
-            case '4':
-              alert('Adios '+nombre);
-              break;
-            case '2':
-              alert('Error '+nombre);
-              break;
-          }
-        },
-        error: function() {
-            alert('Error: archivo no encontrado');
-        }
-      });
-  
-}
-    
-
-
 
 function enviarComandoAlArduino(resultado) {
     if (port && port.writable) {
